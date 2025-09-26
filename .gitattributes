@@ -1,0 +1,39 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Custom for Visual Studio
+*.cs     diff=csharp
+*.sln    merge=union
+*.suo    binary
+*.user   binary
+*.useros binary
+*.sln.docstates binary
+
+# Custom for Visual Studio Code
+*.code-workspace text
+
+# Custom for Node.js
+*.js     text eol=lf
+*.ts     text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+
+# Custom for Docker
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+
+# Custom for Shell scripts
+*.sh     text eol=lf
+*.bash   text eol=lf
+
+# Binary files
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.pdf    binary
+*.zip    binary
+*.tar.gz binary

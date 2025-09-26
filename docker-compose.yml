@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: inventory-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: inventory_manager
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - inventory-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: inventory-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/inventory_manager?authSource=admin
+      MONGODB_TEST_URI: mongodb://admin:password123@mongodb:27017/inventory_manager_test?authSource=admin
+      JWT_SECRET: your-super-secret-jwt-key-here-change-in-production
+      JWT_REFRESH_SECRET: your-super-secret-refresh-key-here-change-in-production
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      RATE_LIMIT_WINDOW_MS: 900000
+      RATE_LIMIT_MAX_REQUESTS: 100
+      LOG_LEVEL: info
+      CACHE_TTL: 300000
+      API_DOCS_PATH: /api-docs
+    depends_on:
+      - mongodb
+    networks:
+      - inventory-network
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  mongodb_data:
+
+networks:
+  inventory-network:
+    driver: bridge
